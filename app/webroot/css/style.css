@@ -13,3 +13,12 @@
   margin-right: 10px;
   margin-left: 10px;
 }
+.Welcome {
+	text-align: center;
+}
+.Welcome-message {
+	display: inline-block;
+}
+.Welcome-user {
+	margin-top: 0;
+}

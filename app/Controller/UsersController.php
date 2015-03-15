@@ -47,7 +47,7 @@ class UsersController extends AppController {
     {
         if ($user['role'] == 'admin') {
             // Lo que pueden hacer todos los usuarios registrados administradores
-            if (in_array($this->action, array('add')))
+            if (in_array($this->action, array('add', 'view', 'index', 'edit', 'delete')))
             {
                 return true;
             }
@@ -62,14 +62,51 @@ class UsersController extends AppController {
         }
         else
         {
-            if ($this->Auth->user('id'))
+            if ($user['role'] == 'produccion')
             {
-                $this->Session->setFlash('Usted no puede acceder a este contenido.');
-                $this->redirect($this->Auth->redirect());
+                // Lo que pueden hacer todos los usuarios registrados regentes
+                if (in_array($this->action, array('home')))
+                {
+                    return true;
+                }
+                else
+                {
+                    if ($this->Auth->user('id'))
+                    {
+                        $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                        $this->redirect($this->Auth->redirect());
+                    }
+                }
+            }
+            else
+            {
+                if ($user['role'] == 'ventas')
+                {
+                    // Lo que pueden hacer todos los usuarios registrados vendedores
+                    if (in_array($this->action, array('home')))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        if ($this->Auth->user('id'))
+                        {
+                            $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                            $this->redirect($this->Auth->redirect());
+                        }
+                    }
+                }
+                else
+                {
+                    if ($this->Auth->user('id'))
+                    {
+                        $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                        $this->redirect($this->Auth->redirect());
+                    }
+                }
             }
         }
-
-	    return parent::isAuthorized($user);
+        return parent::isAuthorized($user);
     }
 
 
@@ -103,6 +140,7 @@ class UsersController extends AppController {
 
     public function home()
     {
+    	// $this->layout ='background';
         //echo $this->Auth->user('id');//recupera id o cualquier dato del usuario actual
     }
 
