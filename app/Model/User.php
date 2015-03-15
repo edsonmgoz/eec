@@ -39,6 +39,11 @@ class User extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+			'unique' => array(
+		        'rule' => 'isUnique',
+		        //'required' => 'create'
+		        'message' => 'El usuario ya existe.'
+			),
 		),
 		'password' => array(
 			'notEmpty' => array(
@@ -49,7 +54,7 @@ class User extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
-		)
+		),
 	);
 
     public function beforeSave($options = array())

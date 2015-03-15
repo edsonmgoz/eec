@@ -1,3 +1,25 @@
+.margin-container {
+	margin-top: 50px;
+}
+.margin-none {
+	margin: 0;
+}
+
+.padding-none {
+	padding: 0;
+}
+.auth-custom-message,
+.message{
+	display: inline-block;
+	color: red;
+	font-weight: bold;
+	padding-top: 1.4em;
+}
+.error-message {
+	color: red;
+	font-weight: bold;
+}
+
 /* MARKETING CONTENT
 -------------------------------------------------- */
 

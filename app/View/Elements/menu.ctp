@@ -10,7 +10,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <?php echo $this->html->link('<span class="glyphicon glyphicon-home"></span> E C C', array('action' => 'home'), array('class' => 'navbar-brand', 'escape' => FALSE)); ?>
+      <?php echo $this->html->link('<span class="glyphicon glyphicon-home"></span> E C C', array('controller' => 'users', 'action' => 'home'), array('class' => 'navbar-brand', 'escape' => FALSE)); ?>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
@@ -23,10 +23,80 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Usuarios <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li>
-                <?php echo $this->html->link('Ver usuarios', array('action' => 'index')); ?>
+                <?php echo $this->html->link('Ver usuarios', array('controller' => 'users', 'action' => 'index')); ?>
               </li>
               <li>
-                <?php echo $this->html->link('Agregar usuario', array('action' => 'add')); ?>
+                <?php echo $this->html->link('Agregar usuario', array('controller' => 'users', 'action' => 'add')); ?>
+              </li>
+            </ul>
+          </li>
+        <?php } ?>
+
+        <?php
+        if ($current_user['role'] == 'admin' or $current_user['role'] == 'produccion')
+        {
+        ?>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Productos <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <?php echo $this->html->link('Ver productos', array('controller' => 'products', 'action' => 'index')); ?>
+              </li>
+              <li>
+                <?php echo $this->html->link('Agregar producto', array('controller' => 'products','action' => 'add')); ?>
+              </li>
+            </ul>
+          </li>
+        <?php } ?>
+
+        <?php
+        if ($current_user['role'] == 'ventas')
+        {
+        ?>
+          <li>
+            <?php echo $this->html->link('Registrar venta', array('controller' => 'sales', 'action' => 'add')); ?>
+          </li>
+          <li>
+            <?php echo $this->html->link('Lista de ventas', array('controller' => 'sales', 'action' => 'index')); ?>
+          </li>
+        <?php } ?>
+
+        <?php
+        if ($current_user['role'] == 'admin')
+        {
+        ?>
+          <li>
+            <?php echo $this->html->link('Lista de ventas', array('controller' => 'sales', 'action' => 'index')); ?>
+          </li>
+          <li>
+            <?php echo $this->html->link('Lista de piezas', array('controller' => 'productions', 'action' => 'demand')); ?>
+          </li>
+        <?php } ?>
+
+        <?php
+        if ($current_user['role'] == 'produccion')
+        {
+        ?>
+          <li>
+            <?php echo $this->html->link('Pedidos pendientes', array('controller' => 'productions', 'action' => 'pending')); ?>
+          </li>
+          <li>
+            <?php echo $this->html->link('Producir unidades', array('controller' => 'productions', 'action' => 'add')); ?>
+          </li>
+        <?php } ?>
+
+        <?php
+        if ($current_user['role'] == 'compras')
+        {
+        ?>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Piezas <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <?php echo $this->html->link('Ver piezas', array('controller' => 'pieces', 'action' => 'index')); ?>
+              </li>
+              <li>
+                <?php echo $this->html->link('Agregar pieza', array('controller' => 'pieces','action' => 'add')); ?>
               </li>
             </ul>
           </li>
@@ -50,7 +120,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         <li>
-          <?php echo $this->html->link('Cerrar sesión', array('action' => 'logout')); ?>
+          <?php echo $this->html->link('Cerrar sesión', array('controller' => 'users', 'action' => 'logout')); ?>
       </ul>
     </div>
   </div>

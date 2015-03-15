@@ -13,9 +13,6 @@
 					<?php echo $this->Form->input('username', array('class' => 'form-control', 'label' => 'Usuario')); ?>
 				</div>
 				<div class="form-group">
-					<?php echo $this->Form->input('password', array('class' => 'form-control', 'label' => 'Contraseña')); ?>
-				</div>
-				<div class="form-group">
 					<?php echo $this->Form->input('role', array('class' => 'form-control', 'label' => 'Rol', 'type' => 'select', 'options' => array('ventas' => 'Ventas', 'produccion' => 'Produccion', 'compras' => 'Compras'), array('class' => 'form-control'))); ?>
 				</div>
 				<div class="form-group">

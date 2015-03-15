@@ -14,8 +14,8 @@
     	<?php echo $this->Html->image('1.jpg', array('alt' => 'imagen uno')); ?>
       <div class="container">
         <div class="carousel-caption">
-          <h1>Example headline.</h1>
-          <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and "previous" Glyphicon buttons on the left and right might not load/display properly due to web browser security rules.</p>
+          <h1>Produciendo tu Pedido.</h1>
+          <p>EEC piensa en ti como uno mas de nuestra familia y produce la mas alta calidad en computadoras para tu satisfacción.</p>
           <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
         </div>
       </div>
@@ -24,8 +24,8 @@
     	<?php echo $this->Html->image('2.jpg', array('alt' => 'imagen dos')); ?>
       <div class="container">
         <div class="carousel-caption">
-          <h1>Another example headline.</h1>
-          <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+          <h1>Al Día con la Tecnología</h1>
+          <p>Contamos con la mas alta tecnología en ensamble para brindarte los productos mas certificados y con garantía.</p>
           <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
         </div>
       </div>
@@ -35,8 +35,8 @@
 
       <div class="container">
         <div class="carousel-caption">
-          <h1>One more for good measure.</h1>
-          <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+          <h1>Tu satisfacción es la nuestra.</h1>
+          <p>Porque cumplimos tus espectativas y tus demandas son nuestra prioridad.</p>
           <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
         </div>
       </div>

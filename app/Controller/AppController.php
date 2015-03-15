@@ -55,7 +55,7 @@ class AppController extends Controller {
                 'action' => 'login'
             ),
             'authorize' => array('Controller'),
-            'authError' => 'Usted no puede acceder a este contenido'
+            'authError' => 'No puede acceder'
         )
     );
 

@@ -1,13 +1,13 @@
 <div class="col-md-12">
-	<div class="page-header">
-		<h2><?php echo __('Usuarios'); ?></h2>
+	<div class="page-header margin-none ">
+		<h2 class="padding-none"><?php echo __('Usuarios'); ?></h2>
 	</div>
 	<div class="table-responsive">
 		<table class="table table-bordered table-hover">
 		<thead>
 		<tr>
 				<th><?php echo $this->Paginator->sort('Nombre'); ?></th>
-				<th><?php echo $this->Paginator->sort('Usario'); ?></th>
+				<th><?php echo $this->Paginator->sort('Usuario'); ?></th>
 				<th><?php echo $this->Paginator->sort('Rol'); ?></th>
 				<th><?php echo $this->Paginator->sort('Estado'); ?></th>
 				<th class="actions"><?php echo __('Acciones'); ?></th>

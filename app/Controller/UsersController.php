@@ -55,7 +55,7 @@ class UsersController extends AppController {
             {
                 if ($this->Auth->user('id'))
                 {
-                    $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                    $this->Session->setFlash('No puede acceder');
                     $this->redirect($this->Auth->redirect());
                 }
             }
@@ -73,7 +73,7 @@ class UsersController extends AppController {
                 {
                     if ($this->Auth->user('id'))
                     {
-                        $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                        $this->Session->setFlash('No puede acceder');
                         $this->redirect($this->Auth->redirect());
                     }
                 }
@@ -91,7 +91,7 @@ class UsersController extends AppController {
                     {
                         if ($this->Auth->user('id'))
                         {
-                            $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                            $this->Session->setFlash('No puede acceder');
                             $this->redirect($this->Auth->redirect());
                         }
                     }
@@ -100,7 +100,7 @@ class UsersController extends AppController {
                 {
                     if ($this->Auth->user('id'))
                     {
-                        $this->Session->setFlash('Usted no puede acceder a este contenido.');
+                        $this->Session->setFlash('No puede acceder');
                         $this->redirect($this->Auth->redirect());
                     }
                 }
@@ -120,7 +120,7 @@ class UsersController extends AppController {
 	        }
             else
             {
-                $this->Session->setFlash(__('Datos Incorrectos. Por Favor Intente de Nuevo.'), 'default', array(), 'auth');
+                $this->Session->setFlash(__('Datos Incorrectos'), 'default', array('class' => 'auth-custom-message'), 'auth');
             }
 	    }
         else
@@ -134,7 +134,7 @@ class UsersController extends AppController {
 
 	public function logout()
     {
-        $this->Session->setFlash('Usted ha cerrado su sesion exitosamente.');
+        // $this->Session->setFlash('Usted ha cerrado su sesion exitosamente.');
         return $this->redirect($this->Auth->logout());
 	}
 
@@ -151,8 +151,14 @@ class UsersController extends AppController {
  */
 	public function index() {
 		$this->User->recursive = 0;
-		$this->Paginator->settings = $this->paginate;
-		$this->set('users', $this->Paginator->paginate());
+
+        $this->Paginator->settings = array(
+            'conditions' => array('User.role !=' => 'admin'));
+        $users = $this->Paginator->paginate('User');
+        $this->set(compact('users'));
+
+
+
 	}
 
 /**
@@ -182,7 +188,7 @@ class UsersController extends AppController {
 				$this->Session->setFlash('El usuario ha sido creado.', 'default', array('class' => 'alert alert-success'));
 				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+                $this->Session->setFlash('El usuario no pudo ser creado.', 'default', array('class' => 'alert alert-danger'));
 			}
 		}
 	}
