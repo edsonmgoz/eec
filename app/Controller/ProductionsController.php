@@ -69,7 +69,7 @@ class ProductionsController extends AppController {
             if ($user['role'] == 'produccion')
             {
                 // Lo que pueden hacer todos los usuarios registrados regentes
-                if (in_array($this->action, array('add', 'view', 'index', 'edit', 'delete', 'pending', 'submit')))
+                if (in_array($this->action, array('add', 'view', 'index', 'edit', 'delete', 'pending', 'submit', 'assess')))
                 {
                     return true;
                 }
@@ -129,13 +129,45 @@ class ProductionsController extends AppController {
  * @return void
  */
 	public function add() {
-		if ($this->request->is('post')) {
+		if ($this->request->is('post'))
+		{
+			$piezas = $this->Production->Piece->find('all');
+			$cantidad = $this->data['Production']['quantity'];
+			$product_id = $this->data['Production']['product_id'];
+
+
+			for($i = 0; $i<(count($piezas)); $i++)
+			{
+				if($cantidad >= $piezas[$i]['Piece']['quantity'])
+				{
+					$nueva_cantidad = $piezas[$i]['Piece']['quantity'];
+				}
+			}
+
+			for ($j = 0; $j < count($piezas); $j++)
+			{
+				$id_pieza = $piezas[$j]['Piece']['id'];
+				$total_piezas = $piezas[$j]['Piece']['quantity'] - $nueva_cantidad;
+				$save_total = array('id' => $id_pieza, 'quantity' => $total_piezas);
+				$this->Production->Piece->save($save_total);
+			}
+
+			//Sumando cantidad a stock de productos
+			$this->Production->Product->recursive = -1;
+			$cantidad_producto = $this->Production->Product->find('all', array('conditions' => array('Product.id' => $product_id)));
+			$cantidad_actual = $cantidad_producto[0]['Product']['quantity'];
+			$cantidad_total = $cantidad_actual + $nueva_cantidad;
+			$nueva_cantidad_producto = array('id' => $product_id, 'quantity' => $cantidad_total);
+			$this->Production->Product->save($nueva_cantidad_producto);
+
 			$this->Production->create();
 			if ($this->Production->save($this->request->data)) {
-				$this->Session->setFlash(__('The production has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The production could not be saved. Please, try again.'));
+				$this->Session->setFlash('<ul><li>Unidades producidas con éxito: ' . $nueva_cantidad . '</li><li> Unidades aún faltantes: '. ($cantidad - $nueva_cantidad) . '</li></ul>', 'default', array('class' => 'alert alert-success'));
+				return $this->redirect(array('action' => 'add'));
+			}
+			else
+			{
+                $this->Session->setFlash('No se pudo procesar la solicitud.', 'default', array('class' => 'alert alert-danger'));
 			}
 		}
 		$products = $this->Production->Product->find('list');
@@ -194,7 +226,8 @@ class ProductionsController extends AppController {
 
 		$this->Production->Sale->recursive = 0;
         $this->Paginator->settings = array(
-            'conditions' => array('Sale.confirm' => 1));
+            'conditions' => array('Sale.confirm' => 1),
+            'order' => array('Sale.id' => 'desc'));
         $sales = $this->Paginator->paginate('Sale');
         $this->set(compact('sales'));
 	}
@@ -208,40 +241,86 @@ class ProductionsController extends AppController {
 		$id_producto = $pedido[0]['Product']['id'];
 		$state_production = $pedido[0]['Sale']['state_production'];
 		$name_product = $pedido[0]['Product']['name'];
+		$confirm_order = $pedido[0]['Sale']['state_order'];
 
-		if ($cantidad_sale > $cantidad_product)
+
+		if ($confirm_order == 0)
 		{
-			$total_faltantes = $cantidad_sale - $cantidad_product;
-			$this->Session->setFlash('Faltan <strong>' . $total_faltantes . '</strong> unidade (s) del producto <strong>' . $name_product .'</strong>, se recomienda producir nuevas unidades', 'default', array('class' => 'alert alert-danger'));
-			return $this->redirect(array('action' => 'add'));
+			$this->Session->setFlash('Necesita confirmación de ventas para enviar el pedido', 'default', array('class' => 'alert alert-danger'));
+			return $this->redirect(array('action' => 'pending'));
 		}
-		else
+		elseif($confirm_order == 1)
 		{
-			// echo "si puedes producir";
-			if($state_production == 1)
+			if ($cantidad_sale > $cantidad_product)
 			{
-				$this->Session->setFlash('El pedido ya ha sido enviado', 'default', array('class' => 'alert alert-warning'));
-				return $this->redirect(array('action' => 'pending'));
+				$total_faltantes = $cantidad_sale - $cantidad_product;
+				$this->Session->setFlash('Faltan <strong>' . $total_faltantes . '</strong> unidade (s) del producto <strong>' . $name_product .'</strong>, se recomienda producir nuevas unidades', 'default', array('class' => 'alert alert-danger'));
+				return $this->redirect(array('action' => 'add'));
 			}
 			else
 			{
-				$total_producto = $cantidad_product - $cantidad_sale;
-				$guardar_total = array('id' => $id_producto, 'quantity' => $total_producto);
-				if ($this->Production->Sale->Product->saveAll($guardar_total))
+				// echo "si puedes producir";
+				if($state_production == 1)
 				{
-					$confirm_submit = 1;
-					$send_confirm = array('id' => $id, 'state_production' => $confirm_submit);
-					$this->Production->Sale->saveAll($send_confirm);
-					$this->Session->setFlash('El pedido ha sido enviado con éxito', 'default', array('class' => 'alert alert-success'));
-					return $this->redirect(array('action' => 'pending'));
-				} else {
-					$this->Session->setFlash('El pedido no pudo ser enviado', 'default', array('class' => 'alert alert-danger'));
+					$this->Session->setFlash('El pedido ya ha sido enviado', 'default', array('class' => 'alert alert-warning'));
 					return $this->redirect(array('action' => 'pending'));
 				}
+				else
+				{
+					$total_producto = $cantidad_product - $cantidad_sale;
+					$guardar_total = array('id' => $id_producto, 'quantity' => $total_producto);
+					if ($this->Production->Sale->Product->saveAll($guardar_total))
+					{
+						$confirm_submit = 1;
+						$send_confirm = array('id' => $id, 'state_production' => $confirm_submit);
+						$this->Production->Sale->saveAll($send_confirm);
+						$this->Session->setFlash('El pedido ha sido enviado con éxito', 'default', array('class' => 'alert alert-success'));
+						return $this->redirect(array('action' => 'pending'));
+					} else {
+						$this->Session->setFlash('El pedido no pudo ser enviado', 'default', array('class' => 'alert alert-danger'));
+						return $this->redirect(array('action' => 'pending'));
+					}
+				}
+
 			}
 		}
+
 		$this->autoRender = false;
 	}
+
+	public function assess($id = null)
+	{
+		if (!$this->Production->Sale->exists($id)) {
+			throw new NotFoundException(__('Invalid sale'));
+		}
+		$evaluation = $this->Production->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
+		$state_evaluation = $evaluation[0]['Sale']['state_evaluation'];
+		if($state_evaluation == 1)
+		{
+			$this->Session->setFlash('El avaluo ya fue enviado a gerencia', 'default', array('class' => 'alert alert-warning'));
+			return $this->redirect(array('action' => 'pending'));
+		}
+		else
+		{
+			if ($this->request->is(array('post', 'put')))
+			{
+				$date_production = $this->request->data['Production']['date_production'];
+				$save_date_production = array('id' => $id, 'date_production' => $date_production, 'state_evaluation' => 1);
+				if ($this->Production->Sale->save($save_date_production))
+				{
+					$this->Session->setFlash('El avaluo fue enviado a gerencia', 'default', array('class' => 'alert alert-success'));
+					return $this->redirect(array('action' => 'pending'));
+				} else {
+					$this->Session->setFlash('El avaluo no fue enviado', 'default', array('class' => 'alert alert-danger'));
+					return $this->redirect(array('action' => 'pending'));
+				}
+
+			}
+			$assess = $this->Production->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
+			$this->set(compact('assess'));
+		}
+	}
+
 	public function demand()
 	{
 

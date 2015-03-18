@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <?php echo $this->html->link('<span class="glyphicon glyphicon-home"></span>ECC', array('action' => 'login'), array('class' => 'navbar-brand', 'escape' => FALSE)); ?>
+          <?php echo $this->html->link('<span class="glyphicon glyphicon-home"></span> E E C', array('action' => 'login'), array('class' => 'navbar-brand', 'escape' => FALSE)); ?>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
         <?php echo $this->Session->flash('auth'); ?>

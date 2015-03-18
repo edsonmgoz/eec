@@ -10,7 +10,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <?php echo $this->html->link('<span class="glyphicon glyphicon-home"></span> E C C', array('controller' => 'users', 'action' => 'home'), array('class' => 'navbar-brand', 'escape' => FALSE)); ?>
+      <?php echo $this->html->link('<span class="glyphicon glyphicon-home"></span> E E C', array('controller' => 'users', 'action' => 'home'), array('class' => 'navbar-brand', 'escape' => FALSE)); ?>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
@@ -66,6 +66,9 @@
         {
         ?>
           <li>
+            <?php echo $this->html->link('Lista de avaluos', array('controller' => 'sales', 'action' => 'evaluation')); ?>
+          </li>
+          <li>
             <?php echo $this->html->link('Lista de ventas', array('controller' => 'sales', 'action' => 'index')); ?>
           </li>
           <li>
@@ -102,7 +105,7 @@
           </li>
         <?php } ?>
 
-        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+<!--         <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
         <li><a href="#">Link</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -115,7 +118,7 @@
             <li class="divider"></li>
             <li><a href="#">One more separated link</a></li>
           </ul>
-        </li>
+        </li> -->
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

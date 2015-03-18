@@ -11,34 +11,24 @@
 			<?php echo h($sale['Sale']['dni']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Cantidad'); ?></dt>
-		<dd>
-			<?php echo h($sale['Sale']['quantity']); ?>
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Total'); ?></dt>
-		<dd>
-			<?php echo h($sale['Sale']['total']); ?> $
-			&nbsp;
-		</dd>
-		<dt><?php echo __('Fecha de entrega'); ?></dt>
-		<dd>
-			<?php echo h($sale['Sale']['delivery_date']); ?>
-			&nbsp;
-		</dd>
 		<dt><?php echo __('Producto'); ?></dt>
 		<dd>
 			<?php echo h($sale['Product']['name']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Creado'); ?></dt>
+		<dt><?php echo __('Cantidad'); ?></dt>
 		<dd>
-			<?php echo h($sale['Sale']['created']); ?>
+			<?php echo h($sale['Sale']['quantity']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Modificado'); ?></dt>
+		<dt><?php echo __('Precio total de la venta'); ?></dt>
 		<dd>
-			<?php echo h($sale['Sale']['modified']); ?>
+			<?php echo h($sale['Sale']['total_sale']); ?> $
+			&nbsp;
+		</dd>
+		<dt><?php echo __('Fecha de entrega'); ?></dt>
+		<dd>
+			<?php echo h($sale['Sale']['date_production']); ?>
 			&nbsp;
 		</dd>
 	</dl>
@@ -58,6 +48,8 @@
 </div>
 
 <?php echo $this->Form->postLink(__('Enviar a producción'), array('controller' => 'sales', 'action' => 'confirm', $sale['Sale']['id']), array('class' => 'btn btn-info'), __('Enviar a producción ?')); ?>
+
+<?php echo $this->Form->postLink(__('Confirmar pedido'), array('controller' => 'sales', 'action' => 'confirm_order', $sale['Sale']['id']), array('class' => 'btn btn-primary'), __('Confirmar pedido ?')); ?>
 
 <?php
 	echo $this->Form->postLink(__('Procesar venta'), array('controller' => 'sales', 'action' => 'sale_process', $sale['Sale']['id']), array('class' => 'btn btn-success'), __('Procesar venta ?'));

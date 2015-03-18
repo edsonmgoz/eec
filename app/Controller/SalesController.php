@@ -51,7 +51,7 @@ class SalesController extends AppController {
     {
         if ($user['role'] == 'admin') {
             // Lo que pueden hacer todos los usuarios registrados administradores
-            if (in_array($this->action, array('index')))
+            if (in_array($this->action, array('index', 'evaluation', 'add_utility')))
             {
                 return true;
             }
@@ -69,7 +69,7 @@ class SalesController extends AppController {
             if ($user['role'] == 'ventas')
             {
                 // Lo que pueden hacer todos los usuarios registrados regentes
-                if (in_array($this->action, array('add', 'view', 'index', 'edit', 'delete', 'confirm', 'sale_process')))
+                if (in_array($this->action, array('add', 'view', 'index', 'edit', 'delete', 'confirm', 'sale_process', 'confirm_order')))
                 {
                     return true;
                 }
@@ -104,8 +104,10 @@ class SalesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Sale->recursive = 0;
-		$this->set('sales', $this->Paginator->paginate());
+        $this->Paginator->settings = array(
+            'order' => array('Sale.id' => 'desc'));
+        $sales = $this->Paginator->paginate('Sale');
+        $this->set(compact('sales'));
 	}
 
 /**
@@ -221,9 +223,9 @@ class SalesController extends AppController {
  */
 	public function delete($id = null) {
 		$confirma_pedido = $this->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
-		$field_confirm = $confirma_pedido[0]['Sale']['confirm'];
+		$cancel_sale = $confirma_pedido[0]['Sale']['cancel_sale'];
 
-		if ($field_confirm == 1)
+		if ($cancel_sale == 1)
 		{
 			$this->Session->setFlash('No puede cancelar la venta porque su pedido ya está en proceso', 'default', array('class' => 'alert alert-danger'));
 			return $this->redirect(array('action' => 'index'));
@@ -259,7 +261,7 @@ class SalesController extends AppController {
 			else
 			{
 				$confirm = 1;
-				$send_confirm = array('id' => $id, 'confirm' => $confirm);
+				$send_confirm = array('id' => $id, 'confirm' => $confirm, 'cancel_sale' => 1);
 				if ($this->Sale->saveAll($send_confirm))
 				{
 					$this->Session->setFlash('Su solicitud fue enviada correctamente', 'default', array('class' => 'alert alert-success'));
@@ -275,9 +277,10 @@ class SalesController extends AppController {
 	{
 		$confirma_produccion = $this->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
 		$state_production = $confirma_produccion[0]['Sale']['state_production'];
+		$state_sale = $confirma_produccion[0]['Sale']['state_sale'];
 		if ($this->request->is(array('post', 'put')))
 		{
-			if ($state_production == 0)
+			if ($state_production == 0 or $state_sale == 1)
 			{
 				$this->Session->setFlash('La venta no pudo ser procesada', 'default', array('class' => 'alert alert-danger'));
 				return $this->redirect(array('action' => 'view', $id));
@@ -296,4 +299,88 @@ class SalesController extends AppController {
 			}
 		}
 	}
+
+	// Enviar pedido a produccón una vez haya sido confirmado por gerencia
+	public function confirm_order($id = null)
+	{
+		$confirm_order = $this->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
+		$field_confirm = $confirm_order[0]['Sale']['state_admin'];
+		$order_confirm = $confirm_order[0]['Sale']['state_production'];
+
+		if ($this->request->is(array('post', 'put')))
+		{
+			if ($field_confirm == 0)
+			{
+				$this->Session->setFlash('El pedido debe ser aprobado por gerencia.', 'default', array('class' => 'alert alert-danger'));
+				return $this->redirect(array('action' => 'view', $id));
+			}
+			else
+			{
+				if($order_confirm == 1)
+				{
+					$this->Session->setFlash('El pedido ya está en producción.', 'default', array('class' => 'alert alert-warning'));
+					return $this->redirect(array('action' => 'view', $id));
+				}
+				else
+				{
+					$confirm = 1;
+					$send_confirm = array('id' => $id, 'state_order' => $confirm, 'cancel_sale' => 1);
+					if ($this->Sale->saveAll($send_confirm))
+					{
+						$this->Session->setFlash('El pedido fue confirmado y enviado a producción', 'default', array('class' => 'alert alert-success'));
+						return $this->redirect(array('action' => 'index'));
+					} else {
+						$this->Session->setFlash('No pudo ser enviado', 'default', array('class' => 'alert alert-danger'));
+					}
+				}
+			}
+		}
+	}
+
+	// Lista de evaluacion enviado desde produccion a administrador
+	public function evaluation()
+	{
+        $this->Paginator->settings = array(
+            'conditions' => array('Sale.state_evaluation' => 1, 'Sale.state_admin' => 0));
+        $evaluations = $this->Paginator->paginate('Sale');
+        $this->set(compact('evaluations'));
+	}
+
+	//Agegando utilidad del pedido y enviando ventas
+	public function add_utility($id = null)
+	{
+		if (!$this->Sale->exists($id)) {
+			throw new NotFoundException(__('Invalid sale'));
+		}
+
+		if ($this->request->is(array('post', 'put')))
+		{
+			$this->Sale->set( $this->data );
+			if ($this->Sale->validates(array('fieldList' => array('utility'))))
+			{
+				$utility = $this->request->data['Sale']['utility'];
+				$total = $this->request->data['Sale']['total'];
+				$total_sale = $total + $utility;
+
+				$save_total_sale = array('id' => $id, 'total_sale' => $total_sale, 'state_admin' => 1, 'cancel_sale' => 0);
+				if ($this->Sale->save($save_total_sale))
+				{
+					$this->Session->setFlash('La venta ha sido confirmada por gerencia', 'default', array('class' => 'alert alert-success'));
+					return $this->redirect(array('action' => 'evaluation'));
+				} else {
+					$this->Session->setFlash('La venta no pudo ser confirmada', 'default', array('class' => 'alert alert-danger'));
+					return $this->redirect(array('action' => 'evaluation'));
+				}
+			}
+			else
+			{
+			    $this->Sale->validationErrors;
+			}
+		}
+		$assess = $this->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
+		$this->set(compact('assess'));
+	}
+
+
+
 }

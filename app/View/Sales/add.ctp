@@ -3,7 +3,7 @@
 		<div class="page-header">
 			<h2><?php echo __('Nueva venta'); ?></h2>
 		</div>
-		<?php echo $this->Form->create('Sale', array('role' => 'form', 'class' => 'form-horizontal')); ?>
+		<?php echo $this->Form->create('Sale', array('role' => 'form')); ?>
 			<fieldset>
 				<div class="form-group">
 					<?php echo $this->Form->input('client', array('class' => 'form-control', 'label' => 'Nombre del cliente')); ?>
@@ -19,7 +19,7 @@
 				</div>
 				<div class="form-group">
 					<div class="input-group">
-					<?php echo $this->Form->input('delivery_date', array('class' => 'form-control', 'label' => 'Fecha de entrega')); ?>
+					<?php echo $this->Form->input('delivery_date', array('class' => 'form-control', 'label' => 'Fecha tentativa')); ?>
 					</div>
 				</div>
 

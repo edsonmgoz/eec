@@ -7,12 +7,11 @@
 		<thead>
 		<tr>
 			<th><?php echo $this->Paginator->sort('Cliente'); ?></th>
-			<th><?php echo $this->Paginator->sort('DNI'); ?></th>
-			<th><?php echo $this->Paginator->sort('Cantidad'); ?></th>
-			<th><?php echo $this->Paginator->sort('Fecha de entrega'); ?></th>
 			<th><?php echo $this->Paginator->sort('Producto'); ?></th>
-			<th><?php echo $this->Paginator->sort('Total'); ?> $</th>
-			<th class="actions"><?php echo __('Estado'); ?></th>
+			<th><?php echo $this->Paginator->sort('Cantidad'); ?></th>
+			<th><?php echo $this->Paginator->sort('Fecha tentativa'); ?></th>
+			<th class="actions"><?php echo __('Estado de pedido'); ?></th>
+			<th class="actions"><?php echo __('Gerencia'); ?></th>
 			<th class="actions"><?php echo __('Vendido'); ?></th>
 			<?php if($current_user['role'] == 'ventas') {?>
 			<th class="actions"><?php echo __('Actions'); ?></th>
@@ -23,11 +22,9 @@
 		<?php foreach ($sales as $sale): ?>
 		<tr>
 			<td><?php echo h($sale['Sale']['client']); ?>&nbsp;</td>
-			<td><?php echo h($sale['Sale']['dni']); ?>&nbsp;</td>
+			<td><?php echo h($sale['Product']['name']); ?>&nbsp;</td>
 			<td><?php echo h($sale['Sale']['quantity']); ?>&nbsp;</td>
 			<td><?php echo h($sale['Sale']['delivery_date']); ?>&nbsp;</td>
-			<td><?php echo h($sale['Product']['name']); ?>&nbsp;</td>
-			<td><?php echo h($sale['Sale']['total']); ?>&nbsp;</td>
 			<td class="text-center">
 				<?php
 					if($sale['Sale']['state_production'] == true)
@@ -44,6 +41,18 @@
 						{
 							echo "<span class='glyphicon glyphicon-remove text-danger' title='Sin confirmar'></span>";
 						}
+					}
+				?>
+			</td>
+			<td class="text-center">
+				<?php
+					if($sale['Sale']['state_admin'] == true)
+					{
+						echo "<span class='glyphicon glyphicon-ok text-success' title='Confirmado'></span>";
+					}
+					elseif($sale['Sale']['state_admin'] == false)
+					{
+						echo "<span class='glyphicon glyphicon-remove text-danger' title='Sin confirmar'></span>";
 					}
 				?>
 			</td>

@@ -9,7 +9,8 @@
 			<th><?php echo $this->Paginator->sort('Producto'); ?></th>
 			<th><?php echo $this->Paginator->sort('Cantidad'); ?></th>
 			<th><?php echo $this->Paginator->sort('Fecha de entrega'); ?></th>
-			<th class="actions"><?php echo __('Estado'); ?></th>
+			<th class="actions"><?php echo __('Estado de pedido'); ?></th>
+			<th class="actions"><?php echo __('Confirmado'); ?></th>
 			<?php if($current_user['role'] == 'produccion') {?>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 			<?php } ?>
@@ -41,8 +42,23 @@
 				?>
 			</td>
 
+			<td class="text-center">
+				<?php
+					if($sale['Sale']['state_order'] == true)
+					{
+						echo "<span class='glyphicon glyphicon-ok text-success' title='Confirmado'></span>";
+					}
+					elseif($sale['Sale']['state_order'] == false)
+					{
+						echo "<span class='glyphicon glyphicon-remove text-danger' title='Sin confirmar'></span>";
+					}
+				?>
+			</td>
+
 			<?php if($current_user['role'] == 'produccion') { ?>
 			<td class="actions">
+				<?php echo $this->Html->link(__('Evaluar'), array('action' => 'assess', $sale['Sale']['id']), array('class' => 'btn btn-sm btn-primary')); ?>
+
 				<?php echo $this->Html->link(__('Enviar pedido'), array('action' => 'submit', $sale['Sale']['id']), array('class' => 'btn btn-sm btn-success')); ?>
 			</td>
 			<?php } ?>

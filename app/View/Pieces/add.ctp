@@ -3,7 +3,7 @@
 		<div class="page-header">
 			<h2><?php echo __('Agregar pieza'); ?></h2>
 		</div>
-		<?php echo $this->Form->create('Piece', array('role' => 'form', 'class' => 'form-horizontal')); ?>
+		<?php echo $this->Form->create('Piece', array('role' => 'form')); ?>
 			<fieldset>
 				<div class="form-group">
 					<?php echo $this->Form->input('code', array('class' => 'form-control', 'label' => 'Código')); ?>
@@ -12,7 +12,13 @@
 					<?php echo $this->Form->input('name', array('class' => 'form-control', 'label' => 'Nombre')); ?>
 				</div>
 				<div class="form-group">
+					<?php echo $this->Form->input('price', array('class' => 'form-control', 'label' => 'Precio')); ?>
+				</div>
+				<div class="form-group">
 					<?php echo $this->Form->input('quantity', array('class' => 'form-control', 'label' => 'Cantidad')); ?>
+				</div>
+				<div class="form-group">
+					<?php echo $this->Form->input('provider', array('class' => 'form-control', 'label' => 'Proveedor', 'type' => 'select', 'options' => array('Importadora WSC computer' => 'Importadora WSC computer', 'Itm parts of machine' => 'Itm parts of machine', 'Tokio Master Engine Parts' => 'Tokio Master Engine Parts'), array('class' => 'form-control'))); ?>
 				</div>
 			</fieldset>
 			<p>

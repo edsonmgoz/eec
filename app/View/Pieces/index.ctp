@@ -1,54 +1,58 @@
-<div class="pieces index">
-	<h2><?php echo __('Pieces'); ?></h2>
-	<table cellpadding="0" cellspacing="0">
-	<thead>
-	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('code'); ?></th>
-			<th><?php echo $this->Paginator->sort('name'); ?></th>
-			<th><?php echo $this->Paginator->sort('quantity'); ?></th>
-			<th><?php echo $this->Paginator->sort('created'); ?></th>
-			<th><?php echo $this->Paginator->sort('modified'); ?></th>
+<div class="col-md-12">
+	<div class="page-header margin-none ">
+		<h2 class="padding-none"><?php echo __('Piezas'); ?></h2>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-bordered table-hover">
+		<thead>
+		<tr>
+			<th><?php echo $this->Paginator->sort('Codigo'); ?></th>
+			<th><?php echo $this->Paginator->sort('Nombre'); ?></th>
+			<th><?php echo $this->Paginator->sort('Precio'); ?> $</th>
+			<th><?php echo $this->Paginator->sort('Cantidad'); ?> Uds</th>
+			<th><?php echo $this->Paginator->sort('Proveedor'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
-	</tr>
-	</thead>
-	<tbody>
-	<?php foreach ($pieces as $piece): ?>
-	<tr>
-		<td><?php echo h($piece['Piece']['id']); ?>&nbsp;</td>
-		<td><?php echo h($piece['Piece']['code']); ?>&nbsp;</td>
-		<td><?php echo h($piece['Piece']['name']); ?>&nbsp;</td>
-		<td><?php echo h($piece['Piece']['quantity']); ?>&nbsp;</td>
-		<td><?php echo h($piece['Piece']['created']); ?>&nbsp;</td>
-		<td><?php echo h($piece['Piece']['modified']); ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $piece['Piece']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $piece['Piece']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $piece['Piece']['id']), array(), __('Are you sure you want to delete # %s?', $piece['Piece']['id'])); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</tbody>
-	</table>
-	<p>
+		</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($pieces as $piece): ?>
+		<tr>
+			<td><?php echo h($piece['Piece']['code']); ?>&nbsp;</td>
+			<td><?php echo h($piece['Piece']['name']); ?>&nbsp;</td>
+			<td><?php echo h($piece['Piece']['price']); ?>&nbsp;</td>
+			<td><?php echo h($piece['Piece']['quantity']); ?>&nbsp;</td>
+			<td><?php echo h($piece['Piece']['provider']); ?>&nbsp;</td>
+			</td>
+			<td class="actions">
+				<?php echo $this->Html->link(__('View'), array('action' => 'view', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-info')); ?>
+				<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-success')); ?>
+				<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-danger'), __('Esta seguro ?')); ?>
+
+			</td>
+		</tr>
+	<?php endforeach; ?>
+		</tbody>
+		</table>
+	</div>
+
+	<p class="text-success">
 	<?php
 	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
+	'format' => __('Pagina {:page} de {:pages}, mostrando {:current} registros de {:count} totales, iniciando en {:start}, finalizando en {:end}')
 	));
 	?>	</p>
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Piece'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Productions'), array('controller' => 'productions', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Production'), array('controller' => 'productions', 'action' => 'add')); ?> </li>
+	<ul class="pagination">
+		<li>
+			<?php echo $this->Paginator->prev('< ' . __('Anterior'), array('tag' => false), null, array('class' => 'prev disabled')); ?>
+		</li>
+		<?php echo $this->Paginator->numbers(array('separator' => '', 'tag' => 'li', 'currentTag' => 'a', 'currentClass' => 'active')); ?>
+		<li>
+			<?php echo $this->Paginator->next(__('Siguiente') . ' >', array('tag' => false), null, array('class' => 'next disabled')); ?>
+		</li>
 	</ul>
+
+	<div class="actions">
+		<h3><?php echo __('Acciones'); ?></h3>
+		<?php echo $this->Html->link(__('Nueva pieza'), array('action' => 'add'), array('class' => 'btn btn-primary')); ?>
+	</div>
 </div>

@@ -14,9 +14,9 @@
     	<?php echo $this->Html->image('1.jpg', array('alt' => 'imagen uno')); ?>
       <div class="container">
         <div class="carousel-caption">
-          <h1>Produciendo tu Pedido.</h1>
-          <p>EEC piensa en ti como uno mas de nuestra familia y produce la mas alta calidad en computadoras para tu satisfacción.</p>
-          <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+          <h1 class="text-black">Produciendo tu Pedido.</h1>
+          <p class="text-black">EEC piensa en ti como uno mas de nuestra familia y produce la mas alta calidad en computadoras para tu satisfacción.</p>
+          <p><a class="btn btn-lg btn-primary" href="#" role="button">Contactanos</a></p>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
         <div class="carousel-caption">
           <h1>Al Día con la Tecnología</h1>
           <p>Contamos con la mas alta tecnología en ensamble para brindarte los productos mas certificados y con garantía.</p>
-          <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+          <p><a class="btn btn-lg btn-primary" href="#" role="button">Innovamos</a></p>
         </div>
       </div>
     </div>
@@ -35,9 +35,9 @@
 
       <div class="container">
         <div class="carousel-caption">
-          <h1>Tu satisfacción es la nuestra.</h1>
-          <p>Porque cumplimos tus espectativas y tus demandas son nuestra prioridad.</p>
-          <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+          <h1 class="text-black">Tu satisfacción es la nuestra.</h1>
+          <p class="text-black">Porque cumplimos tus espectativas y tus demandas son nuestra prioridad.</p>
+          <p><a class="btn btn-lg btn-primary" href="#" role="button">Calidad</a></p>
         </div>
       </div>
     </div>

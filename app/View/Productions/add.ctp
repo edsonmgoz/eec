@@ -3,7 +3,7 @@
 		<div class="page-header">
 			<h2><?php echo __('Producir unidades'); ?></h2>
 		</div>
-		<?php echo $this->Form->create('Production', array('role' => 'form', 'class' => 'form-horizontal')); ?>
+		<?php echo $this->Form->create('Production', array('role' => 'form')); ?>
 			<fieldset>
 				<div class="form-group">
 					<?php echo $this->Form->input('quantity', array('class' => 'form-control', 'label' => 'Cantidad')); ?>
