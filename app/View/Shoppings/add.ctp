@@ -1,15 +1,15 @@
 <div class="row">
 	<div class="col-md-6">
 		<div class="page-header">
-			<h2><?php echo __('Solicitar piezas'); ?></h2>
+			<h2>Solicitar pieza <?php echo $pieces['Piece']['name']; ?></h2>
 		</div>
+		<p><strong>Cantidad actual:</strong></p>
+		<p><?php echo $pieces['Piece']['quantity']; ?> Uds</p>
 		<?php echo $this->Form->create('Shopping', array('role' => 'form')); ?>
 			<fieldset>
 				<div class="form-group">
-					<?php echo $this->Form->input('quantity', array('class' => 'form-control', 'label' => 'Cantidad')); ?>
-				</div>
-				<div class="form-group">
-					<?php echo $this->Form->input('piece_id', array('class' => 'form-control', 'label' => 'Pieza')); ?>
+					<?php echo $this->Form->input('quantity', array('class' => 'form-control', 'label' => 'Cantidad a solicitar')); ?>
+					<?php echo $this->Form->hidden('piece_id',array('value' => $pieces['Piece']['id'])); ?>
 				</div>
 			</fieldset>
 			<p>

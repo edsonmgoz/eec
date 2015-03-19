@@ -38,7 +38,25 @@
 			<td><?php echo h($piece['Piece']['provider']); ?>&nbsp;</td>
 			<?php endif ?>
 			<?php if ($current_user['role'] == 'produccion'): ?>
-			<td>*</td>
+			<td class="text-center">
+				<?php
+				if ($piece['Piece']['state'] == 0)
+				{
+					if($piece['Piece']['quantity'] == 0)
+					{
+						echo "<span class='glyphicon glyphicon-warning-sign text-danger' title='Falta existencias'></span>";
+					}
+					else
+					{
+						echo "<span class='glyphicon glyphicon-ok text-success' title='Con stock'></span>";
+					}
+				}
+				elseif ($piece['Piece']['state'] == 1)
+				{
+						echo "<span class='glyphicon glyphicon-time text-warning' title='En espera...'></span>";
+				}
+				?>
+			</td>
 			<?php endif ?>
 			</td>
 			<td class="actions">
@@ -48,7 +66,7 @@
 					<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-danger'), __('Esta seguro ?')); ?>
 				<?php endif ?>
 				<?php if ($current_user['role'] == 'produccion'): ?>
-					<?php echo $this->Html->link(__('Solicitar pieza'), array('action' => 'edit', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-primary')); ?>
+					<?php echo $this->Html->link(__('Solicitar pieza'), array('controller' => 'shoppings', 'action' => 'add', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-primary')); ?>
 				<?php endif ?>
 			</td>
 		</tr>

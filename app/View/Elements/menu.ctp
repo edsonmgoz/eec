@@ -72,7 +72,7 @@
             <?php echo $this->html->link('Lista de ventas', array('controller' => 'sales', 'action' => 'index')); ?>
           </li>
           <li>
-            <?php echo $this->html->link('Lista de piezas', array('controller' => 'productions', 'action' => 'demand')); ?>
+            <?php echo $this->html->link('Compras pendientes', array('controller' => 'shoppings', 'action' => 'pending')); ?>
           </li>
         <?php } ?>
 
@@ -85,9 +85,6 @@
           </li>
           <li>
             <?php echo $this->html->link('Producir unidades', array('controller' => 'productions', 'action' => 'add')); ?>
-          </li>
-          <li>
-            <?php echo $this->html->link('Solicitar piezas', array('controller' => 'shoppings', 'action' => 'add')); ?>
           </li>
           <li>
             <?php echo $this->html->link('Lista de piezas', array('controller' => 'pieces', 'action' => 'index')); ?>
@@ -108,6 +105,9 @@
                 <?php echo $this->html->link('Agregar pieza', array('controller' => 'pieces','action' => 'add')); ?>
               </li>
             </ul>
+          </li>
+          <li>
+            <?php echo $this->html->link('Piezas pendientes', array('controller' => 'shoppings', 'action' => 'index')); ?>
           </li>
         <?php } ?>
 
