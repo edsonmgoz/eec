@@ -3,7 +3,7 @@
 		<div class="page-header">
 			<h2><?php echo __('Nuevo producto'); ?></h2>
 		</div>
-		<?php echo $this->Form->create('Product', array('role' => 'form', 'class' => 'form-horizontal')); ?>
+		<?php echo $this->Form->create('Product', array('role' => 'form')); ?>
 			<fieldset>
 				<div class="form-group">
 					<?php echo $this->Form->input('code', array('class' => 'form-control', 'label' => 'Código')); ?>

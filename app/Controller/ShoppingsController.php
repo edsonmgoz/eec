@@ -32,7 +32,7 @@ class ShoppingsController extends AppController {
     public function isAuthorized($user)
     {
         if ($user['role'] == 'admin') {
-            if (in_array($this->action, array('pending', 'process')))
+            if (in_array($this->action, array('pending', 'authorize', 'index')))
             {
                 return true;
             }
@@ -66,7 +66,7 @@ class ShoppingsController extends AppController {
             elseif ($user['role'] == 'compras')
             {
                 // Lo que pueden hacer todos los usuarios registrados regentes
-                if (in_array($this->action, array('index', 'process')))
+                if (in_array($this->action, array('index', 'consult', 'shop')))
                 {
                     return true;
                 }
@@ -101,8 +101,10 @@ class ShoppingsController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Shopping->recursive = 0;
-		$this->set('shoppings', $this->Paginator->paginate());
+        $this->Paginator->settings = array(
+            'order' => array('Shopping.id' => 'desc'));
+        $shoppings = $this->Paginator->paginate('Shopping');
+        $this->set(compact('shoppings'));
 	}
 
 
@@ -141,45 +143,76 @@ class ShoppingsController extends AppController {
         }
 	}
 
-    // Procesando TODO compras
-    public function process($id = null)
+    public function consult($id = null)
+    {
+        if (!$this->Shopping->exists($id)) {
+            throw new NotFoundException(__('Invalid piece'));
+        }
+
+
+        $compra = $this->Shopping->find('all', array('conditions' => array('Shopping.id' => $id)));
+        $state_shopping = $compra[0]['Shopping']['state_shopping'];
+
+        if($state_shopping == 1)
+        {
+            $this->Session->setFlash('Ocurrió un error al realizar la consulta', 'default', array('class' => 'alert alert-danger'));
+            return $this->redirect(array('controller' => 'shoppings', 'action' => 'index'));
+        }
+        elseif ($state_shopping == 0)
+        {
+            $state_shopping_save = array('id' => $id, 'state_shopping' => 1);
+            if ($this->Shopping->save($state_shopping_save))
+            {
+                $this->Session->setFlash('Su consulta fue enviada a gerencia', 'default', array('class' => 'alert alert-success'));
+                return $this->redirect(array('controller' => 'shoppings', 'action' => 'index'));
+            } else {
+                $this->Session->setFlash('Su consulta no pudo ser enviada', 'default', array('class' => 'alert alert-danger'));
+            }
+        }
+        $this->autoRender = false;
+    }
+
+    public function authorize($id = null)
+    {
+        if (!$this->Shopping->exists($id)) {
+            throw new NotFoundException(__('Invalid piece'));
+        }
+        $state_admin_save = array('id' => $id, 'state_admin' => 1);
+        if ($this->Shopping->save($state_admin_save))
+        {
+            $this->Session->setFlash('La compra fue autorizada', 'default', array('class' => 'alert alert-success'));
+            return $this->redirect(array('controller' => 'shoppings', 'action' => 'pending'));
+        } else {
+            $this->Session->setFlash('La compra no pudo ser autorizada', 'default', array('class' => 'alert alert-danger'));
+        }
+        $this->autoRender = false;
+    }
+
+    public function shop($id = null)
     {
         if (!$this->Shopping->exists($id)) {
             throw new NotFoundException(__('Invalid piece'));
         }
         $compra = $this->Shopping->find('all', array('conditions' => array('Shopping.id' => $id)));
-        $state_piece = $compra[0]['Piece']['state'];
-        $state_shopping = $compra[0]['Shopping']['state_shopping'];
+        $id_pieza = $compra[0]['Piece']['id'];
+        $cantidad_compra = $compra[0]['Shopping']['quantity'];
+        $cantidad_pieza = $compra[0]['Piece']['quantity'];
+        $total_commpra = $cantidad_compra + $cantidad_pieza;
         $state_admin = $compra[0]['Shopping']['state_admin'];
         $state_provider = $compra[0]['Shopping']['state_provider'];
-        if($state_shopping == 0 and $state_admin == 0)
+
+        if ($state_admin == 0 or $state_provider == 1)
         {
-            // Enviando solicitud a administrador
-            $message_success = "Su consulta fue enviada a gerencia";
-            $message_danger = "Su consulta no pudo ser enviada";
-            $accion = "index";
-            $this->change_state('Shopping', 'state_shopping', 1, $id, $message_success, $message_danger, $accion);
+            $this->Session->setFlash('Ocurrió un error al realizar la compra', 'default', array('class' => 'alert alert-danger'));
+            return $this->redirect(array('controller' => 'shoppings', 'action' => 'index'));
         }
-        elseif($state_shopping == 1 and $state_admin == 0)
+        elseif ($state_admin == 1)
         {
-            // Administrador autoriza compra de piezas a compras
-            $message_success = "La compra fue autorizada";
-            $message_danger = "La compra no pudo ser autorizada";
-            $accion = "pending";
-            $this->change_state('Shopping', 'state_admin', 1, $id, $message_success, $message_danger, $accion);
-        }
-        elseif ($state_shopping == 1 and $state_admin == 1)
-        {
-            // Compras compra las piezas a proveedor
-            $id_pieza = $compra[0]['Piece']['id'];
-            $cantidad_compra = $compra[0]['Shopping']['quantity'];
-            $cantidad_pieza = $compra[0]['Piece']['quantity'];
-            $total_commpra = $cantidad_compra + $cantidad_pieza;
-            $sumar_compra = array('id' => $id_pieza, 'quantity' => $total_commpra);
-            $this->Shopping->Piece->save($sumar_compra);
+            $change_state_provider = array('id' => $id, 'state_provider' => 1);
+            $this->Shopping->save($change_state_provider);
 
             // cambiar estado de state_provider
-            $change_piece = array('id' => $id_pieza, 'state' => 0);
+            $change_piece = array('id' => $id_pieza,'quantity' => $total_commpra, 'state' => 0);
 
             if ($this->Shopping->Piece->save($change_piece))
             {
@@ -187,24 +220,10 @@ class ShoppingsController extends AppController {
                 return $this->redirect(array('controller' => 'shoppings', 'action' => 'index'));
             } else {
                 $this->Session->setFlash('La compra no pudo ser realizada', 'default', array('class' => 'alert alert-danger'));
-            }
+            }            # code...
         }
 
-        $this->autoRender = false;
 
-    }
-
-    public function change_state($model, $state, $value, $id, $message_success, $message_danger, $accion)
-    {
-        $change = array('id' => $id, $state => $value);
-
-        if ($this->$model->save($change))
-        {
-            $this->Session->setFlash($message_success, 'default', array('class' => 'alert alert-success'));
-            return $this->redirect(array('controller' => 'shoppings', 'action' => $accion));
-        } else {
-            $this->Session->setFlash($message_danger, 'default', array('class' => 'alert alert-danger'));
-        }
         $this->autoRender = false;
     }
 
@@ -213,7 +232,7 @@ class ShoppingsController extends AppController {
         $this->Shopping->recursive = 0;
 
         $this->Paginator->settings = array(
-            'conditions' => array('Shopping.state_shopping' => 1, 'Shopping.state_admin' => 0));
+            'conditions' => array('Shopping.state_shopping' => 1, 'Shopping.state_admin' => 0), 'order' => array('Shopping.id' => 'desc'));
         $shoppings = $this->Paginator->paginate('Shopping');
         $this->set(compact('shoppings'));
     }

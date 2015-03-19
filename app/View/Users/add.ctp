@@ -3,7 +3,7 @@
 		<div class="page-header">
 			<h2><?php echo __('Nuevo usuario'); ?></h2>
 		</div>
-		<?php echo $this->Form->create('User', array('role' => 'form', 'class' => 'form-horizontal')); ?>
+		<?php echo $this->Form->create('User', array('role' => 'form')); ?>
 			<fieldset>
 				<div class="form-group">
 					<?php echo $this->Form->input('name', array('class' => 'form-control', 'label' => 'Nombre')); ?>

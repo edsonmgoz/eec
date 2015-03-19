@@ -41,7 +41,7 @@
 				?>
 			</td>
 			<td class="actions">
-				<?php echo $this->Html->link(__('Autorizar'), array('action' => 'process', $shopping['Shopping']['id']), array('class' => 'btn btn-sm btn-success')); ?>
+				<?php echo $this->Html->link(__('Autorizar'), array('action' => 'authorize', $shopping['Shopping']['id']), array('class' => 'btn btn-sm btn-success')); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

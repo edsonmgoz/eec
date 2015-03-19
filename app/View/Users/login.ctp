@@ -58,8 +58,8 @@
 
       <hr>
 
-      <footer>
-        <p>&copy; E.E.C. 2015</p>
+      <footer class="text-center">
+        <p>&copy; Empresa ensambladora de computadoras 2015</p>
       </footer>
     </div> <!-- /container -->
   </body>

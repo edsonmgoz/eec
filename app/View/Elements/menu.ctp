@@ -74,6 +74,9 @@
           <li>
             <?php echo $this->html->link('Compras pendientes', array('controller' => 'shoppings', 'action' => 'pending')); ?>
           </li>
+          <li>
+            <?php echo $this->html->link('Lista de compras', array('controller' => 'shoppings', 'action' => 'index')); ?>
+          </li>
         <?php } ?>
 
         <?php

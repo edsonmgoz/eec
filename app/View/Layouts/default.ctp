@@ -44,9 +44,6 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
  			 <p><?php echo $this->Session->flash(); ?></p>
 
 			<?php echo $this->fetch('content'); ?>
-		<div id="footer">
-
-		</div>
 	</div>
 	<?php // echo $this->element('sql_dump'); ?>
 </body>

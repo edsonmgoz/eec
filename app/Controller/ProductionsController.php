@@ -135,34 +135,69 @@ class ProductionsController extends AppController {
 			$cantidad = $this->data['Production']['quantity'];
 			$product_id = $this->data['Production']['product_id'];
 
-
+			$menor = null;
 			for($i = 0; $i<(count($piezas)); $i++)
 			{
-				if($cantidad >= $piezas[$i]['Piece']['quantity'])
-				{
-					$nueva_cantidad = $piezas[$i]['Piece']['quantity'];
-				}
+				$menor[] = $piezas[$i]['Piece']['quantity'];
 			}
 
-			for ($j = 0; $j < count($piezas); $j++)
+			$min = min($menor);
+
+			if($cantidad >= $min)
 			{
-				$id_pieza = $piezas[$j]['Piece']['id'];
-				$total_piezas = $piezas[$j]['Piece']['quantity'] - $nueva_cantidad;
-				$save_total = array('id' => $id_pieza, 'quantity' => $total_piezas);
-				$this->Production->Piece->save($save_total);
+				$nueva_cantidad = $min;
 			}
+
+			if(isset($nueva_cantidad))
+			{
+				for ($j = 0; $j < count($piezas); $j++)
+				{
+					$id_pieza = $piezas[$j]['Piece']['id'];
+					$total_piezas = $piezas[$j]['Piece']['quantity'] - $nueva_cantidad;
+					$save_total = array('id' => $id_pieza, 'quantity' => $total_piezas);
+					$this->Production->Piece->save($save_total);
+				}
+				//Sumando cantidad a stock de productos
+				$this->Production->Product->recursive = -1;
+				$cantidad_producto = $this->Production->Product->find('all', array('conditions' => array('Product.id' => $product_id)));
+				$cantidad_actual = $cantidad_producto[0]['Product']['quantity'];
+				$cantidad_total = $cantidad_actual + $nueva_cantidad;
+				$nueva_cantidad_producto = array('id' => $product_id, 'quantity' => $cantidad_total);
+				$this->Production->Product->save($nueva_cantidad_producto);
+
+				$this->Production->create();
+				if ($this->Production->save($this->request->data)) {
+					$this->Session->setFlash('<ul><li>Unidades producidas con éxito: ' . $nueva_cantidad . '</li><li> Unidades aún faltantes: '. ($cantidad - $nueva_cantidad) . '</li></ul>', 'default', array('class' => 'alert alert-success'));
+					return $this->redirect(array('action' => 'add'));
+				}
+				else
+				{
+	                $this->Session->setFlash('No se pudo procesar la solicitud.', 'default', array('class' => 'alert alert-danger'));
+				}
+
+			}
+
+
+			for($k = 0; $k<(count($piezas)); $k++)
+			{
+					$id_pieza = $piezas[$k]['Piece']['id'];
+					$total_piezas = $piezas[$k]['Piece']['quantity'] - $cantidad;
+					$save_total = array('id' => $id_pieza, 'quantity' => $total_piezas);
+					$this->Production->Piece->save($save_total);
+			}
+
 
 			//Sumando cantidad a stock de productos
 			$this->Production->Product->recursive = -1;
 			$cantidad_producto = $this->Production->Product->find('all', array('conditions' => array('Product.id' => $product_id)));
 			$cantidad_actual = $cantidad_producto[0]['Product']['quantity'];
-			$cantidad_total = $cantidad_actual + $nueva_cantidad;
+			$cantidad_total = $cantidad_actual + $cantidad;
 			$nueva_cantidad_producto = array('id' => $product_id, 'quantity' => $cantidad_total);
 			$this->Production->Product->save($nueva_cantidad_producto);
 
 			$this->Production->create();
 			if ($this->Production->save($this->request->data)) {
-				$this->Session->setFlash('<ul><li>Unidades producidas con éxito: ' . $nueva_cantidad . '</li><li> Unidades aún faltantes: '. ($cantidad - $nueva_cantidad) . '</li></ul>', 'default', array('class' => 'alert alert-success'));
+				$this->Session->setFlash('Unidades producidas con éxito: ' . $cantidad, 'default', array('class' => 'alert alert-success'));
 				return $this->redirect(array('action' => 'add'));
 			}
 			else

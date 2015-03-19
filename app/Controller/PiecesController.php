@@ -120,7 +120,7 @@ class PiecesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Piece->recursive = 0;
+		$this->Piece->recursive = -1;
 		$this->set('pieces', $this->Paginator->paginate());
 	}
 
@@ -187,17 +187,31 @@ class PiecesController extends AppController {
  * @param string $id
  * @return void
  */
-	public function delete($id = null) {
-		$this->Piece->id = $id;
-		if (!$this->Piece->exists()) {
-			throw new NotFoundException(__('Invalid piece'));
-		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->Piece->delete()) {
-			$this->Session->setFlash('La pieza fue eliminada', 'default', array('class' => 'alert alert-success'));
-		} else {
-			$this->Session->setFlash('La pieza no pudo ser eliminada', 'default', array('class' => 'alert alert-danger'));
-		}
-		return $this->redirect(array('action' => 'index'));
-	}
+    public function delete($id = null) {
+
+        $this->Piece->Shopping->recursive = 0;
+        $shop = $this->Piece->Shopping->find('all', array('conditions' => array('Shopping.piece_id' => $id)));
+
+        if(count($shop) > 0)
+        {
+            $this->Session->setFlash('La pieza no puede ser eliminada', 'default', array('class' => 'alert alert-danger'));
+            return $this->redirect(array('action' => 'index'));
+        }
+        else
+        {
+            $this->Piece->id = $id;
+            if (!$this->Piece->exists()) {
+                throw new NotFoundException(__('Invalid piece'));
+            }
+            $this->request->allowMethod('post', 'delete');
+            if ($this->Piece->delete()) {
+                $this->Session->setFlash('La pieza fue eliminada', 'default', array('class' => 'alert alert-success'));
+            } else {
+                $this->Session->setFlash('La pieza no pudo ser eliminada', 'default', array('class' => 'alert alert-danger'));
+            }
+            return $this->redirect(array('action' => 'index'));
+        }
+    }
+
+
 }
