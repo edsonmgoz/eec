@@ -1,14 +1,7 @@
 <?php
 App::uses('AppController', 'Controller');
-/**
- * Pieces Controller
- *
- * @property Piece $Piece
- * @property PaginatorComponent $Paginator
- * @property RequestHandlerComponent $RequestHandler
- * @property SessionComponent $Session
- */
-class PiecesController extends AppController {
+
+class ShoppingsController extends AppController {
 
 /**
  * Helpers
@@ -33,24 +26,12 @@ class PiecesController extends AppController {
 
 	public function beforeFilter() {
 	    parent::beforeFilter();
-	    // Allow users to home.
-	    // $this->Auth->allow('home');
-	    //$this->Auth->autoRedirect = false; //q no entre a nada de permisos a otro usuario
-
-        /*
-        A veces, desea mostrar el error de autorización sólo después de que el usuario ya ha iniciado la sesión. Puede suprimir este mensaje estableciendo su valor a boolean false, es decir no mostrar mensajes de autorizacion o no autorizacion
-
-        if (!$this->Auth->loggedIn()) {
-            $this->Auth->authError = false;
-        }
-        */
         $this->Auth->autoRedirect = false;
 	}
 
     public function isAuthorized($user)
     {
         if ($user['role'] == 'admin') {
-            // Lo que pueden hacer todos los usuarios registrados administradores
             if (in_array($this->action, array('index')))
             {
                 return true;
@@ -66,10 +47,10 @@ class PiecesController extends AppController {
         }
         else
         {
-            if ($user['role'] == 'compras')
+            if ($user['role'] == 'produccion')
             {
                 // Lo que pueden hacer todos los usuarios registrados regentes
-                if (in_array($this->action, array('add', 'view', 'index', 'edit', 'delete')))
+                if (in_array($this->action, array('add')))
                 {
                     return true;
                 }
@@ -82,7 +63,7 @@ class PiecesController extends AppController {
                     }
                 }
             }
-            elseif ($user['role'] == 'produccion')
+            elseif ($user['role'] == 'compras')
             {
                 // Lo que pueden hacer todos los usuarios registrados regentes
                 if (in_array($this->action, array('index')))
@@ -120,8 +101,8 @@ class PiecesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Piece->recursive = 0;
-		$this->set('pieces', $this->Paginator->paginate());
+		$this->Shopping->recursive = 0;
+		$this->set('shoppings', $this->Paginator->paginate());
 	}
 
 /**
@@ -132,11 +113,11 @@ class PiecesController extends AppController {
  * @return void
  */
 	public function view($id = null) {
-		if (!$this->Piece->exists($id)) {
-			throw new NotFoundException(__('Invalid piece'));
+		if (!$this->Shopping->exists($id)) {
+			throw new NotFoundException(__('Invalid shopping'));
 		}
-		$options = array('conditions' => array('Piece.' . $this->Piece->primaryKey => $id));
-		$this->set('piece', $this->Piece->find('first', $options));
+		$options = array('conditions' => array('Shopping.' . $this->Shopping->primaryKey => $id));
+		$this->set('shopping', $this->Shopping->find('first', $options));
 	}
 
 /**
@@ -145,15 +126,8 @@ class PiecesController extends AppController {
  * @return void
  */
 	public function add() {
-		if ($this->request->is('post')) {
-			$this->Piece->create();
-			if ($this->Piece->save($this->request->data)) {
-				$this->Session->setFlash('La pieza ha sido registrada', 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash('La pieza no pudo ser registrada', 'default', array('class' => 'alert alert-danger'));
-			}
-		}
+        $pieces = $this->Shopping->Piece->find('list');
+        $this->set(compact('pieces'));
 	}
 
 /**
@@ -164,20 +138,22 @@ class PiecesController extends AppController {
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->Piece->exists($id)) {
-			throw new NotFoundException(__('Invalid piece'));
+		if (!$this->Production->exists($id)) {
+			throw new NotFoundException(__('Invalid production'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Piece->save($this->request->data)) {
-				$this->Session->setFlash('La pieza fue modificada', 'default', array('class' => 'alert alert-success'));
+			if ($this->Production->save($this->request->data)) {
+				$this->Session->setFlash(__('The production has been saved.'));
 				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash('La pieza no pudo ser modificada', 'default', array('class' => 'alert alert-danger'));
+				$this->Session->setFlash(__('The production could not be saved. Please, try again.'));
 			}
 		} else {
-			$options = array('conditions' => array('Piece.' . $this->Piece->primaryKey => $id));
-			$this->request->data = $this->Piece->find('first', $options);
+			$options = array('conditions' => array('Production.' . $this->Production->primaryKey => $id));
+			$this->request->data = $this->Production->find('first', $options);
 		}
+		$products = $this->Production->Product->find('list');
+		$this->set(compact('products'));
 	}
 
 /**
@@ -188,15 +164,15 @@ class PiecesController extends AppController {
  * @return void
  */
 	public function delete($id = null) {
-		$this->Piece->id = $id;
-		if (!$this->Piece->exists()) {
-			throw new NotFoundException(__('Invalid piece'));
+		$this->Production->id = $id;
+		if (!$this->Production->exists()) {
+			throw new NotFoundException(__('Invalid production'));
 		}
 		$this->request->allowMethod('post', 'delete');
-		if ($this->Piece->delete()) {
-			$this->Session->setFlash('La pieza fue eliminada', 'default', array('class' => 'alert alert-success'));
+		if ($this->Production->delete()) {
+			$this->Session->setFlash(__('The production has been deleted.'));
 		} else {
-			$this->Session->setFlash('La pieza no pudo ser eliminada', 'default', array('class' => 'alert alert-danger'));
+			$this->Session->setFlash(__('The production could not be deleted. Please, try again.'));
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

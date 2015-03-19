@@ -254,7 +254,7 @@ class ProductionsController extends AppController {
 			if ($cantidad_sale > $cantidad_product)
 			{
 				$total_faltantes = $cantidad_sale - $cantidad_product;
-				$this->Session->setFlash('Faltan <strong>' . $total_faltantes . '</strong> unidade (s) del producto <strong>' . $name_product .'</strong>, se recomienda producir nuevas unidades', 'default', array('class' => 'alert alert-danger'));
+				$this->Session->setFlash('Faltan <strong>' . $total_faltantes . '</strong> unidad (es) del producto <strong>' . $name_product .'</strong>, se recomienda producir nuevas unidades', 'default', array('class' => 'alert alert-danger'));
 				return $this->redirect(array('action' => 'add'));
 			}
 			else
@@ -319,10 +319,5 @@ class ProductionsController extends AppController {
 			$assess = $this->Production->Sale->find('all', array('conditions' => array('Sale.id' => $id)));
 			$this->set(compact('assess'));
 		}
-	}
-
-	public function demand()
-	{
-
 	}
 }

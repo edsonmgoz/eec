@@ -86,6 +86,12 @@
           <li>
             <?php echo $this->html->link('Producir unidades', array('controller' => 'productions', 'action' => 'add')); ?>
           </li>
+          <li>
+            <?php echo $this->html->link('Solicitar piezas', array('controller' => 'shoppings', 'action' => 'add')); ?>
+          </li>
+          <li>
+            <?php echo $this->html->link('Lista de piezas', array('controller' => 'pieces', 'action' => 'index')); ?>
+          </li>
         <?php } ?>
 
         <?php

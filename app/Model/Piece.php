@@ -99,8 +99,8 @@ class Piece extends AppModel {
  * @var array
  */
 	public $hasOne = array(
-		'Production' => array(
-			'className' => 'Production',
+		'Shopping' => array(
+			'className' => 'Shopping',
 			'foreignKey' => 'piece_id',
 			'conditions' => '',
 			'fields' => '',

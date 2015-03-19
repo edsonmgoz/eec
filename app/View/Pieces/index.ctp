@@ -6,28 +6,50 @@
 		<table class="table table-bordered table-hover">
 		<thead>
 		<tr>
+			<?php if ($current_user['role'] == 'compras'): ?>
 			<th><?php echo $this->Paginator->sort('Codigo'); ?></th>
+			<?php endif ?>
 			<th><?php echo $this->Paginator->sort('Nombre'); ?></th>
+			<?php if ($current_user['role'] == 'compras'): ?>
 			<th><?php echo $this->Paginator->sort('Precio'); ?> $</th>
+			<?php endif ?>
 			<th><?php echo $this->Paginator->sort('Cantidad'); ?> Uds</th>
+			<?php if ($current_user['role'] == 'compras'): ?>
 			<th><?php echo $this->Paginator->sort('Proveedor'); ?></th>
+			<?php endif ?>
+			<?php if ($current_user['role'] == 'produccion'): ?>
+			<th><?php echo 'Estado'; ?></th>
+			<?php endif ?>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 		</tr>
 		</thead>
 		<tbody>
 		<?php foreach ($pieces as $piece): ?>
 		<tr>
+			<?php if ($current_user['role'] == 'compras'): ?>
 			<td><?php echo h($piece['Piece']['code']); ?>&nbsp;</td>
+			<?php endif ?>
 			<td><?php echo h($piece['Piece']['name']); ?>&nbsp;</td>
+			<?php if ($current_user['role'] == 'compras'): ?>
 			<td><?php echo h($piece['Piece']['price']); ?>&nbsp;</td>
+			<?php endif ?>
 			<td><?php echo h($piece['Piece']['quantity']); ?>&nbsp;</td>
+			<?php if ($current_user['role'] == 'compras'): ?>
 			<td><?php echo h($piece['Piece']['provider']); ?>&nbsp;</td>
+			<?php endif ?>
+			<?php if ($current_user['role'] == 'produccion'): ?>
+			<td>*</td>
+			<?php endif ?>
 			</td>
 			<td class="actions">
-				<?php echo $this->Html->link(__('View'), array('action' => 'view', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-info')); ?>
-				<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-success')); ?>
-				<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-danger'), __('Esta seguro ?')); ?>
-
+				<?php if ($current_user['role'] == 'compras'): ?>
+					<?php echo $this->Html->link(__('View'), array('action' => 'view', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-info')); ?>
+					<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-success')); ?>
+					<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-danger'), __('Esta seguro ?')); ?>
+				<?php endif ?>
+				<?php if ($current_user['role'] == 'produccion'): ?>
+					<?php echo $this->Html->link(__('Solicitar pieza'), array('action' => 'edit', $piece['Piece']['id']), array('class' => 'btn btn-sm btn-primary')); ?>
+				<?php endif ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

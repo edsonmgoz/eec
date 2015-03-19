@@ -88,5 +88,18 @@ class Production extends AppModel {
 			'counterQuery' => ''
 		)
 	);
-
+/**
+ * hasOne associations
+ *
+ * @var array
+ */
+	public $hasOne = array(
+		'Shopping' => array(
+			'className' => 'Shopping',
+			'foreignKey' => 'production_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		)
+	);
 }
